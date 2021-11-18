@@ -1,33 +1,33 @@
-from linear.pile import Pile, EmptyPileException, PileLimitReachedException
+from linear.stack import Stack, EmptyStackException, StackLimitReachedException
 from linear.queue import Queue, EmptyQueueException, QueueLimitReachedException
 
 
 def test_pile():
     print('\n\n------- TESTES PILHA -------')
-    pile = Pile(max_size=5)
+    pile = Stack(max_size=5)
     try:
         pile.pop()
-    except EmptyPileException:
+    except EmptyStackException:
         pass
     else:
         assert False, 'Pilha vazia permitindo pop'
     
     for i in range(5):
         pile.push(i)
-        print(f'Pushed {i}, novo topo: {pile.top.content}')
-        assert pile.top.content == i
+        print(f'Pushed {i}, novo topo: {pile.top}')
+        assert pile.top == i
         
     try:
         pile.push(5)
-    except PileLimitReachedException:
+    except StackLimitReachedException:
         pass
     else:
         assert False, 'Limite da pilha sendo desrespeitado'
     
     for i in reversed(range(4)):
         pile.pop()
-        print(f'Pop, novo topo: {pile.top.content}')
-        assert pile.top.content == i
+        print(f'Pop, novo topo: {pile.top}')
+        assert pile.top == i
         
     pile.pop()
     assert pile.top is None
@@ -35,7 +35,7 @@ def test_pile():
     
     
 def test_queue():
-    print('\n\n------- TESTES FILA -------')
+    print('\n------- TESTES FILA -------')
     queue = Queue(max_size=5)
     try:
         queue.dequeue()
@@ -45,15 +45,15 @@ def test_queue():
         assert False, 'Fila vazia permitindo dequeue'
     
     queue.enqueue(0)
-    print(f'Enqueued 0, head: {queue.head.content}, tail: {queue.tail.content}')
-    assert queue.tail.content == 0
-    assert queue.head.content == 0
+    print(f'Enqueued 0, head: {queue.head}, tail: {queue.tail}')
+    assert queue.tail == 0
+    assert queue.head == 0
 
     for i in range(1, 5):
         queue.enqueue(i)
-        print(f'Enqueued {i}, head: {queue.head.content}, tail: {queue.tail.content}')
-        assert queue.head.content == 0
-        assert queue.tail.content == i
+        print(f'Enqueued {i}, head: {queue.head}, tail: {queue.tail}')
+        assert queue.head == 0
+        assert queue.tail == i
 
     try:
         queue.enqueue(5)
@@ -64,11 +64,11 @@ def test_queue():
 
     for i in range(4):
         queue.dequeue()
-        print(f'Dequeued, head: {queue.head.content}, tail: {queue.tail.content}')
-        assert queue.head.content == i + 1
-        assert queue.tail.content == 4
+        print(f'Dequeued, head: {queue.head}, tail: {queue.tail}')
+        assert queue.head == i + 1
+        assert queue.tail == 4
 
-    assert queue.head.content == 4
+    assert queue.head == 4
     queue.dequeue()
     assert queue.tail is None
     assert queue.head is None

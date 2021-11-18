@@ -17,18 +17,11 @@ class QueueLimitReachedException(Exception):
         super().__init__(*args, **kwargs)
 
 
-class ProtectedElementException(Exception):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-
 class QueueElement:
-    def __init__(self, content, queue, next=None, is_tail=False, is_head=False):
+    def __init__(self, content, queue, next=None):
         self.__content = content
         self.__queue = queue
         self.__next = next
-        self.__is_head = is_head
-        self.__is_tail = is_tail
 
     def __str__(self):
         return str(self.__content)
@@ -37,29 +30,11 @@ class QueueElement:
         return str(self.__content)
 
     @property
-    def is_head(self):
-        return self.__is_head
-
-    @is_head.setter
-    def is_head(self, is_head):
-        self.__is_head = is_head
-
-    @property
-    def is_tail(self):
-        return self.__is_tail
-
-    @is_tail.setter
-    def is_tail(self, is_tail):
-        self.__is_tail = is_tail
-
-    @property
     def content(self):
         return self.__content
 
     @property
     def next(self):
-        if not self.__is_head and not self.__is_tail:
-            raise ProtectedElementException
         return self.__next
 
     @next.setter
@@ -84,19 +59,18 @@ class Queue:
 
     @property
     def head(self):
-        return self.__head
+        if self.__head:
+            return self.__head.content
 
     @property
     def tail(self):
-        return self.__tail
+        if self.__tail:
+            return self.__tail.content
 
     def dequeue(self):
         if self.__size == 0:
             raise EmptyQueueException
-        self.__head.queue = None
         self.__head = self.__head.next
-        if self.__head is not None:
-            self.__head.is_head = True
         self.__size = self.__size - 1
         if self.__size == 0:
             self.__tail = None
@@ -104,14 +78,10 @@ class Queue:
     def enqueue(self, content):
         if self.__size == self.__max_size:
             raise QueueLimitReachedException
-        if self.__tail:
-            self.__tail.is_tail = False
-        new_element_should_be_head = self.__size == 0
-        element = QueueElement(content, self, None, is_tail=True, is_head=new_element_should_be_head)
-        if new_element_should_be_head:
+        element = QueueElement(content, self)
+        if self.__size == 0:  # new element should be head
             self.__head = element
         else:
             self.__tail.next = element
-            self.__tail.is_tail = False
         self.__tail = element
         self.__size = self.__size + 1
