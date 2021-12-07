@@ -1,39 +1,6 @@
-from linear.stack import Stack, EmptyStackException, StackLimitReachedException
-from linear.queue import Queue, EmptyQueueException, QueueLimitReachedException
+from linear.my_queue import EmptyQueueException, Queue, QueueLimitReachedException
 
 
-def test_pile():
-    print('\n\n------- TESTES PILHA -------')
-    pile = Stack(max_size=5)
-    try:
-        pile.pop()
-    except EmptyStackException:
-        pass
-    else:
-        assert False, 'Pilha vazia permitindo pop'
-    
-    for i in range(5):
-        pile.push(i)
-        print(f'Pushed {i}, novo topo: {pile.top}')
-        assert pile.top == i
-        
-    try:
-        pile.push(5)
-    except StackLimitReachedException:
-        pass
-    else:
-        assert False, 'Limite da pilha sendo desrespeitado'
-    
-    for i in reversed(range(4)):
-        pile.pop()
-        print(f'Pop, novo topo: {pile.top}')
-        assert pile.top == i
-        
-    pile.pop()
-    assert pile.top is None
-    print('OK')
-    
-    
 def test_queue():
     print('\n------- TESTES FILA -------')
     queue = Queue(max_size=5)
@@ -43,7 +10,7 @@ def test_queue():
         pass
     else:
         assert False, 'Fila vazia permitindo dequeue'
-    
+
     queue.enqueue(0)
     print(f'Enqueued 0, head: {queue.head}, tail: {queue.tail}')
     assert queue.tail == 0
@@ -76,5 +43,4 @@ def test_queue():
 
 
 if __name__ == '__main__':
-    test_pile()
     test_queue()
